@@ -1,11 +1,26 @@
-"use client";
+'use client';
 
-const users = [
-  { id: 1, email: "user1@gmail.com", name: "Surya", status: "Active" },
-  { id: 2, email: "user2@gmail.com", name: "Priya", status: "Blocked" },
-];
+import { getAllUsersApi } from "@/lib/apiClient";
+import { useEffect, useState } from "react";
 
 export default function UsersPage() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUsers() {
+      const res = await getAllUsersApi();
+
+      if (res.success) setUsers(res.data);
+      setLoading(false);
+    }
+    loadUsers();
+  }, []);
+
+  if (loading) return <p>Loading users...</p>;
+
+  console.log("88888",users)
+
   return (
     <div>
       <h1>User List</h1>
@@ -19,24 +34,20 @@ export default function UsersPage() {
                 <th>Email</th>
                 <th>Name</th>
                 <th>Status</th>
-                <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {users.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.id}</td>
-                  <td>{u.email}</td>
-                  <td>{u.name}</td>
-                  <td>{u.status}</td>
-                  <td>
-                    <button className="btn">Edit</button>{" "}
-                    <button className="btn">Delete</button>
-                  </td>
+              {users.data.map((userData) => (
+                <tr key={userData.identity}>
+                  <td>{userData.identity}</td>
+                  <td>{userData.email}</td>
+                  <td>{userData.name}</td>
+                  <td>{userData.status}</td>
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       </div>

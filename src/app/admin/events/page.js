@@ -1,47 +1,35 @@
 'use client';
-import { useState } from "react";
 
-// Helper: check if event date is past
-function isPastEvent(eventDate) {
-  const today = new Date().setHours(0, 0, 0, 0);
-  const eDate = new Date(eventDate).setHours(0, 0, 0, 0);
-  return eDate < today;  // TRUE → event finished
-}
-
-const initialEvents = [
-  { 
-    id: 1,
-    name: "Music Night",
-    orgName: "Organizer A",
-    country: "India",
-    state: "KA",
-    city: "Bangalore",
-    date: "2024-12-02",
-    time: "19:00",
-    status: "Approved"
-  },
-  { 
-    id: 2,
-    name: "Startup Expo",
-    orgName: "Organizer B",
-    country: "India",
-    state: "TN",
-    city: "Chennai",
-    date: "2025-12-14",
-    time: "10:00",
-    status: "Pending"
-  }
-];
+import { getAllEventsApi } from "@/lib/apiClient";
+import { useEffect, useState } from "react";
 
 export default function EventsPage() {
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  function updateStatus(id, newStatus) {
-    const updated = events.map((ev) =>
-      ev.id === id ? { ...ev, status: newStatus } : ev
-    );
-    setEvents(updated);
+  // Past event checker
+  function isPastEvent(eventDate) {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const eDate = new Date(eventDate).setHours(0, 0, 0, 0);
+    return eDate < today;
   }
+
+  useEffect(() => {
+    async function loadEvents() {
+      const res = await getAllEventsApi();
+
+      if (res.success) {
+        setEvents(res.data);
+      }
+      setLoading(false);
+    }
+
+    loadEvents();
+  }, []);
+
+  if (loading) return <p>Loading events...</p>;
+
+  console.log("00000",events)
 
   return (
     <div>
@@ -55,47 +43,32 @@ export default function EventsPage() {
                 <th>Event id</th>
                 <th>Event name</th>
                 <th>Organization Name</th>
-                <th>Country</th>
-                <th>State</th>
-                <th>City</th>
+                <th>venue</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>Status Change</th>
+                <th>mode</th>
+                <th>Status</th>
               </tr>
             </thead>
 
             <tbody>
-              {events.map((ev) => (
-                <tr key={ev.id}>
-                  <td>{ev.id}</td>
-                  <td>{ev.name}</td>
-                  <td>{ev.orgName}</td>
-                  <td>{ev.country}</td>
-                  <td>{ev.state}</td>
-                  <td>{ev.city}</td>
-                  <td>{ev.date}</td>
-                  <td>{ev.time}</td>
+              {events.events.map((events) => (
+                <tr key={events.id}>
+                  <td>{events.identity}</td>
+                  <td>{events.title}</td>
+                  <td>{events.orgIdentity}</td>
+                  <td>{events.venue ? events.venue : "==="}</td>
+                  <td>{events.eventDate}</td>
+                  <td>{events.eventTime}</td>
+                  <td>{events.mode}</td>
 
-                  {/* STATUS COLUMN */}
                   <td>
-                    {isPastEvent(ev.date) ? (
-                      <span style={{ color: "red", fontWeight: "600" }}>
+                    {isPastEvent(events.date) ? (
+                      <span style={{ color: "red", fontWeight: 600 }}>
                         Event Finished
                       </span>
                     ) : (
-                      <select
-                        value={ev.status}
-                        onChange={(e) =>
-                          updateStatus(ev.id, e.target.value)
-                        }
-                        style={{ padding: "6px", borderRadius: "6px" }}
-                      >
-                        <option value="Draft">Draft</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Private">Private</option>
-                        <option value="Rejected">Rejected</option>
-                      </select>
+                      <span>Upcoming Event ({events.eventDate})</span>
                     )}
                   </td>
 
