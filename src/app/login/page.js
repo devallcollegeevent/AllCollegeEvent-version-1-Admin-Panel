@@ -9,7 +9,6 @@ export default function LoginPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // frontend-only auth placeholder
     router.push("/admin/organisers");
   }
 

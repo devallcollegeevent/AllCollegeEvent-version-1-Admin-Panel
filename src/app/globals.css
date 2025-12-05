@@ -168,6 +168,88 @@ tbody tr:hover {
 .btn:hover {
   background: #ccc;
 }
+/* ============================
+      TABLE DESIGN
+   ============================ */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+}
+
+thead th {
+  background: #f0f4ff;
+  padding: 12px;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+  text-align: center;
+}
+
+tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+tbody tr:hover {
+  background: #fafafa;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+/* ============================
+          POPUP DESIGN
+   ============================ */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+}
+
+.popup-box {
+  width: 90%;
+  max-width: 420px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.popup-close-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 /* ===========================
         RESPONSIVE DESIGN

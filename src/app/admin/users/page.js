@@ -19,8 +19,6 @@ export default function UsersPage() {
 
   if (loading) return <p>Loading users...</p>;
 
-  console.log("88888",users)
-
   return (
     <div>
       <h1>User List</h1>

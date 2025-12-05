@@ -12,8 +12,6 @@ export default function OrganiserList() {
     async function loadOrganizers() {
       const res = await getAllOrganizersApi();
 
-      console.log("===org",res)
-
       if (res.success) {
         setOrgData(res.data);
       } else {
@@ -28,8 +26,6 @@ export default function OrganiserList() {
 
   if (loading) return <p>Loading organizers...</p>;
 
-  console.log("=======ooo",orgData)
-
   return (
     <div>
       <h1>Organizer List</h1>
@@ -39,7 +35,7 @@ export default function OrganiserList() {
           <table>
             <thead>
               <tr>
-                <th>Organiser id</th>
+                <th>S.No</th>
                 <th>Name</th>
                 <th>Domain Email</th>
                 <th>Category</th>
@@ -52,9 +48,9 @@ export default function OrganiserList() {
             </thead>
 
             <tbody>
-              {orgData.data.map((org) => (
+              {orgData.data.map((org , indexValue) => (
                 <tr key={org.id}>
-                  <td>{org.identity}</td>
+                  <td>{indexValue+1}</td>
                   <td>{org.organizationName}</td>
                   <td>{org.domainEmail}</td>
                   <td>{org.organizationCategory}</td>
