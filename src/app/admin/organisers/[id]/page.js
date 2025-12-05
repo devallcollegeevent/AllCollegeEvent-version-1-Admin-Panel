@@ -4,10 +4,10 @@ import { getOrganizerEventsApi } from "@/lib/apiClient";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function isPastEvent(eventDate) {
+// Past event checker
+function isPast(date) {
   const today = new Date().setHours(0, 0, 0, 0);
-  const eDate = new Date(eventDate).setHours(0, 0, 0, 0);
-  return eDate < today;
+  return new Date(date).setHours(0, 0, 0, 0) < today;
 }
 
 export default function OrganizerEvents() {
@@ -27,88 +27,102 @@ export default function OrganizerEvents() {
     load();
   }, [id]);
 
-  if (loading) return <p>Loading organizer events...</p>;
+  if (loading) return <p>Loading events...</p>;
 
   return (
-    <div>
-      <h1>Events — Organizer ({id})</h1>
+    <div className="container mt-4">
 
+      {/* HEADER */}
+      <div className="d-flex justify-content-between align-items-center">
+        <h2>Events — Organizer ({id})</h2>
+        <button className="btn btn-secondary" onClick={() => router.push("/admin/organisers")}>
+          Back
+        </button>
+      </div>
+
+      {/* ---------- POPUP ---------- */}
       {popup && (
-        <div className="popup-overlay">
-          <div className="popup-box">
-            <h2>{popup.title}</h2>
+        <div
+          className="modal fade show d-block"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
 
-            <p><strong>Organization:</strong> {popup.orgIdentity}</p>
-            <p><strong>Venue:</strong> {popup.venue || "Offline"}</p>
-            <p><strong>Date:</strong> {popup.eventDate}</p>
-            <p><strong>Time:</strong> {popup.eventTime}</p>
-            <p><strong>Mode:</strong> {popup.mode}</p>
+              <div className="modal-header">
+                <h5 className="modal-title">{popup.title}</h5>
+                <button className="btn-close" onClick={() => setPopup(null)}></button>
+              </div>
 
-            <button className="popup-close-btn" onClick={() => setPopup(null)}>
-              Close
-            </button>
+              <div className="modal-body">
+                <p><strong>Organizer:</strong> {popup.orgIdentity}</p>
+                <p><strong>Venue:</strong> {popup.venue || "Offline"}</p>
+                <p><strong>Date:</strong> {popup.eventDate}</p>
+                <p><strong>Time:</strong> {popup.eventTime}</p>
+                <p><strong>Mode:</strong> {popup.mode}</p>
+              </div>
+
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setPopup(null)}>
+                  Close
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
       )}
 
-      <div className="card" style={{ marginTop: 20 }}>
-        <div className="table-wrap">
-          <table>
-            <thead>
+      {/* ---------- TABLE ---------- */}
+      <div className="table-responsive mt-3">
+        <table className="table table-bordered table-striped table-hover">
+
+          <thead className="table-dark">
+            <tr>
+              <th>S.No</th>
+              <th>Event Name</th>
+              <th>Organizer</th>
+              <th>Venue</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {events.length === 0 && (
               <tr>
-                <th>S.No</th>
-                <th>Event name</th>
-                <th>Organization</th>
-                <th>Venue</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
+                <td colSpan="7" className="text-center p-4 text-muted">
+                  No events found
+                </td>
               </tr>
-            </thead>
+            )}
 
-            <tbody>
-              {events.length === 0 && (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center", padding: 20 }}>
-                    No events found
-                  </td>
-                </tr>
-              )}
+            {events.map((ev, index) => (
+              <tr
+                key={ev.identity}
+                style={{ cursor: "pointer" }}
+                onClick={() => setPopup(ev)}
+              >
+                <td>{index + 1}</td>
+                <td>{ev.title}</td>
+                <td>{ev.orgIdentity}</td>
+                <td>{ev.venue || "Offline"}</td>
+                <td>{ev.eventDate}</td>
+                <td>{ev.eventTime}</td>
 
-              {events.map((event , indexValue) => (
-                <tr
-                  key={event.identity}
-                  onClick={() => setPopup(event)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>{indexValue+1}</td>
-                  <td>{event.title}</td>
-                  <td>{event.orgIdentity}</td>
-                  <td>{event.venue || "Offline"}</td>
-                  <td>{event.eventDate}</td>
-                  <td>{event.eventTime}</td>
+                <td className="fw-bold" onClick={(e) => e.stopPropagation()}>
+                  {isPast(ev.eventDate) ? (
+                    <span className="text-danger">Finished</span>
+                  ) : (
+                    <span className="text-success">Upcoming</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
 
-                  <td onClick={(e) => e.stopPropagation()}>
-                    {isPastEvent(ev.eventDate) ? (
-                      <span style={{ color: "red", fontWeight: 600 }}>
-                        Finished
-                      </span>
-                    ) : (
-                      <span>Upcoming</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div 
-            style={{ textAlign: "right", marginTop: 20, cursor: "pointer" }}
-            onClick={() => router.push("/admin/organisers")}
-          >
-            Go Back
-          </div>
-        </div>
+        </table>
       </div>
     </div>
   );

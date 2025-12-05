@@ -65,7 +65,7 @@ body {
 .navlink.active {
   background: #e6efff;
   color: var(--primary);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 
 /* ===========================
@@ -132,7 +132,7 @@ thead th {
   background: #f1f5ff;
   color: #333;
   padding: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   border-bottom: 2px solid #d9d9d9;
   text-align: start;
 }
@@ -155,19 +155,6 @@ td:first-child {
 tbody tr:hover {
   background: #fafafa;
 }
-
-/* Buttons */
-.btn {
-  padding: 7px 12px;
-  background: #ddd;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn:hover {
-  background: #ccc;
-}
 /* ============================
       TABLE DESIGN
    ============================ */
@@ -188,7 +175,7 @@ table {
 thead th {
   background: #f0f4ff;
   padding: 12px;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   border-bottom: 2px solid #e0e0e0;
   text-align: center;
 }
