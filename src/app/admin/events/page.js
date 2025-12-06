@@ -16,8 +16,8 @@ function isPast(date) {
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
-  const [modalData, setModalData] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [modalData, setModalData] = useState("");
+  const [editMode, setEditMode] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -110,17 +110,20 @@ export default function EventsPage() {
       } else {
         alert("Update failed: " + res.message);
       }
-      setModalData(null);
+      setModalData("");
       return;
     }
 
-    const res = await createEventApi(form);
+    console.log("kkkkkk",modalData.identity)
+    console.log("form",form)
+
+    const res = await createEventApi(modalData.org_id, form);
     if (res.success) {
       setEvents([...events, res.data.event]);
     } else {
       alert("Failed to create event: " + res.message);
     }
-    setModalData(null);
+    setModalData("");
   };
 
   /* ===========================
@@ -271,7 +274,7 @@ export default function EventsPage() {
                 </h5>
                 <button
                   className="btn-close"
-                  onClick={() => setModalData(null)}
+                  onClick={() => setModalData("")}
                 ></button>
               </div>
 
@@ -354,7 +357,7 @@ export default function EventsPage() {
               <div className="modal-footer">
                 <button
                   className="btn btn-secondary"
-                  onClick={() => setModalData(null)}
+                  onClick={() => setModalData("")}
                 >
                   Close
                 </button>

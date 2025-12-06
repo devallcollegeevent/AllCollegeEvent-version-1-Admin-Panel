@@ -87,7 +87,6 @@ export default function OrganiserList() {
               <th>S.No</th>
               <th>Name</th>
               <th>Domain Email</th>
-              <th>Category</th>
               <th>Country</th>
               <th>State</th>
               <th>City</th>
@@ -110,7 +109,6 @@ export default function OrganiserList() {
                 <td>{index + 1}</td>
                 <td>{org.organizationName}</td>
                 <td>{org.domainEmail}</td>
-                <td>{org.organizationCategory}</td>
                 <td>{org.country}</td>
                 <td>{org.state}</td>
                 <td>{org.city}</td>

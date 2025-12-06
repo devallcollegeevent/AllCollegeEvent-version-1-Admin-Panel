@@ -1,6 +1,11 @@
 "use client";
 
-import { getAllUsersApi, updateUserApi, deleteUserApi, createUserApi } from "@/lib/apiClient";
+import {
+  getAllUsersApi,
+  updateUserApi,
+  deleteUserApi,
+  createUserApi,
+} from "@/lib/apiClient";
 
 import { useEffect, useState } from "react";
 
@@ -29,7 +34,7 @@ export default function UsersPage() {
   // ============================
   const openAdd = () => {
     setEditMode(false);
-    setModalData({ email: "", name: "", password:"" , status: "" });
+    setModalData({ email: "", name: "", password: "", status: "" });
   };
 
   // ============================
@@ -48,13 +53,18 @@ export default function UsersPage() {
       email: modalData.email,
       name: modalData.name,
       password: modalData.password,
-      type : "user",
+      type: "user",
       // status: modalData.status,
-      
     };
 
     if (editMode) {
+      const body = {
+        email: modalData.email,
+        name: modalData.name,
+        password: modalData.password,
+      };
       // UPDATE USER
+      console.log("modalData", modalData);
       const res = await updateUserApi(modalData.identity, body);
 
       if (res.success) {
@@ -87,9 +97,9 @@ export default function UsersPage() {
     const res = await deleteUserApi(id);
 
     if (res.success) {
-      setUsers(users.filter((u) => u.identity !== id));
+      console.log("deleted user")
     } else {
-      alert("Delete failed: " + res.message);
+      console.log("responce",res.message)
     }
   };
 
@@ -131,7 +141,7 @@ export default function UsersPage() {
                 <td>{u.identity}</td>
                 <td>{u.email}</td>
                 <td>{u.name}</td>
-                <td>{u.status}</td>
+                <td>Active</td>
 
                 <td className="text-center">
                   <button
