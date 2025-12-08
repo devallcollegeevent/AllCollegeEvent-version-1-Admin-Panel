@@ -16,7 +16,7 @@ export default function EventDetails() {
     async function load() {
       // First get all events to find the correct orgId
       const all = await getAllEventsApi();
-      const allEvents = all.data?.events || [];
+      const allEvents = all.data?.data || [];
 
       // find selected event
       const selected = allEvents.find((ev) => ev.identity === id);
@@ -27,11 +27,10 @@ export default function EventDetails() {
         return;
       }
 
-      const orgId = selected.orgIdentity;
+      const res = await getSingleEventApi(id);
+      console.log("qqqqqqqqqqqq",res)
 
-      const res = await getSingleEventApi(orgId, id);
-
-      setEvent(res.data?.event || null);
+      setEvent(res.data?.data || null);
       setLoading(false);
     }
 

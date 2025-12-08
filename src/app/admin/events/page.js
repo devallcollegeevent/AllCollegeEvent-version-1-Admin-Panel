@@ -29,7 +29,7 @@ export default function EventsPage() {
   useEffect(() => {
     async function load() {
       const res = await getAllEventsApi();
-      setEvents(res.data?.events || []);
+      setEvents(res.data?.data || []);
       setLoading(false);
     }
     load();
@@ -116,7 +116,7 @@ export default function EventsPage() {
 
     const res = await createEventApi(modalData.org_id, form);
     if (res.success) {
-      setEvents([...events, res.data.event]);
+      setEvents([...events, res.data.data]);
     } else {
       alert("Failed to create event: " + res.message);
     }

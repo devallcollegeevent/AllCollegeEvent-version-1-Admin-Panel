@@ -21,7 +21,7 @@ export default function OrganizerEvents() {
   useEffect(() => {
     async function load() {
       const res = await getOrganizerEventsApi(id);
-      setEvents(res.data?.events || []);
+      setEvents(res.data?.data || []);
       setLoading(false);
     }
     load();
@@ -55,7 +55,7 @@ export default function OrganizerEvents() {
               </div>
 
               <div className="modal-body">
-                <p><strong>Organizer:</strong> {popup.orgIdentity}</p>
+                <p><strong>Organizer:</strong> {popup.org.organizationName}</p>
                 <p><strong>Venue:</strong> {popup.venue || "Offline"}</p>
                 <p><strong>Date:</strong> {popup.eventDate}</p>
                 <p><strong>Time:</strong> {popup.eventTime}</p>
@@ -106,7 +106,7 @@ export default function OrganizerEvents() {
               >
                 <td>{index + 1}</td>
                 <td>{ev.title}</td>
-                <td>{ev.orgIdentity}</td>
+                <td>{ev.org.organizationName}</td>
                 <td>{ev.venue || "Offline"}</td>
                 <td>{ev.eventDate}</td>
                 <td>{ev.eventTime}</td>

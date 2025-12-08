@@ -39,12 +39,14 @@ export const createEventApi = async (orgId , data) => {
 
 // Get ALL events (GLOBAL events)
 export const getAllEventsApi = async () => {
-    return await handleApi(api.get("/v1/organizations/eve"));
+    return await handleApi(api.get("/v1/events"));
 };
 
 //  Get SINGLE event (inside specific organizer)
-export const getSingleEventApi = async (orgId, eventId) => {
-  return await handleApi(api.get(`/v1/organizations/${orgId}/events/${eventId}`));
+export const getSingleEventApi = async (eventId) => {
+ return await handleApi(
+    api.get(`/v1/events/${eventId}`)
+  );
 };
 
 // update singel event
