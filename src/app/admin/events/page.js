@@ -114,9 +114,6 @@ export default function EventsPage() {
       return;
     }
 
-    console.log("kkkkkk",modalData.identity)
-    console.log("form",form)
-
     const res = await createEventApi(modalData.org_id, form);
     if (res.success) {
       setEvents([...events, res.data.event]);

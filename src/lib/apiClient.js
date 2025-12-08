@@ -44,7 +44,7 @@ export const getAllEventsApi = async () => {
 
 //  Get SINGLE event (inside specific organizer)
 export const getSingleEventApi = async (orgId, eventId) => {
-  return await handleApi(api.get(`/v1/organizations${orgId}/events/${eventId}`));
+  return await handleApi(api.get(`/v1/organizations/${orgId}/events/${eventId}`));
 };
 
 // update singel event
@@ -89,6 +89,5 @@ export const updateUserApi = async (id, data) => {
 
 //  Delete user 
 export const deleteUserApi = async (id) => {
-  console.log("...../",id)
   return await handleApi(api.delete(`/v1/user/${id}`));
 };

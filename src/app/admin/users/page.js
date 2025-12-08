@@ -64,7 +64,6 @@ export default function UsersPage() {
         password: modalData.password,
       };
       // UPDATE USER
-      console.log("modalData", modalData);
       const res = await updateUserApi(modalData.identity, body);
 
       if (res.success) {
