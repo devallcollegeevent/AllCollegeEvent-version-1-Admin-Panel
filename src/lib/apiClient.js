@@ -68,28 +68,28 @@ export const deleteEventApi = async (orgId, eventId) => {
 // CREATE NEW USER
 export const createUserApi = async (data) => {
   return await handleApi(
-    api.post("/v1/auth/signup", data)
+    api.post("/v1/admin/user", data)
   );
 };
 
 //  Get ALL users 
 export const getAllUsersApi = async () => {
-  return await handleApi(api.get("/v1/users"));
+  return await handleApi(api.get("/v1/admin/users"));
 };
 
 //  Get SINGLE user details 
 export const getUserByIdApi = async (id) => {
-  return await handleApi(api.get(`/v1/users/${id}`));
+  return await handleApi(api.get(`/v1/admin/users/${id}`));
 };
 
 //  Update user (name, email, status, etc.) 
 export const updateUserApi = async (id, data) => {
   return await handleApi(
-    api.put(`/v1/user/${id}`, data)
+    api.put(`/v1/admin/user/${id}`, data)
   );
 };
 
 //  Delete user 
 export const deleteUserApi = async (id) => {
-  return await handleApi(api.delete(`/v1/user/${id}`));
+  return await handleApi(api.delete(`/v1/admin/user/${id}`));
 };

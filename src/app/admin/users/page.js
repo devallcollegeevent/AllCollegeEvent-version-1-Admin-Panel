@@ -135,24 +135,24 @@ export default function UsersPage() {
               </tr>
             )}
 
-            {users.map((u) => (
-              <tr key={u.identity}>
-                <td>{u.identity}</td>
-                <td>{u.email}</td>
-                <td>{u.name}</td>
+            {users.map((user) => (
+              <tr key= {user?.identity || "No ID"}>
+                <td> {user?.identity || "No ID"}</td>
+                <td>{user.email}</td>
+                <td>{user.name}</td>
                 <td>Active</td>
 
                 <td className="text-center">
                   <button
                     className="btn btn-primary btn-sm mx-1"
-                    onClick={() => openEdit(u)}
+                    onClick={() => openEdit(user)}
                   >
                     Edit
                   </button>
 
                   <button
                     className="btn btn-danger btn-sm mx-1"
-                    onClick={() => deleteUser(u.identity)}
+                    onClick={() => deleteUser(user.identity)}
                   >
                     Delete
                   </button>
