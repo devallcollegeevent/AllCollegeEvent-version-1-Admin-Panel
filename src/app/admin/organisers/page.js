@@ -12,58 +12,85 @@ export default function OrganiserList() {
 
   useEffect(() => {
     async function loadOrganizers() {
-      const res = await getAllOrganizersApi();
-      if (res.success) {
-        setOrganizers(res.data.data || []); 
+      try {
+        const res = await getAllOrganizersApi();
+        if (res.success) {
+          setOrganizers(res.data.data || []);
+        }
+      } catch (err) {
+        console.error("Failed to load organizers:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
-    loadOrganizers();
+
+    try {
+      loadOrganizers();
+    } catch (err) {
+      console.error("UseEffect error:", err);
+    }
   }, []);
 
   const openAdd = () => {
-    setEditMode(false);
-    setModalData({
-      organizationName: "",
-      domainEmail: "",
-      organizationCategory: "",
-      country: "",
-      state: "",
-      city: "",
-      isVerified: false,
-    });
+    try {
+      setEditMode(false);
+      setModalData({
+        organizationName: "",
+        domainEmail: "",
+        organizationCategory: "",
+        country: "",
+        state: "",
+        city: "",
+        isVerified: false,
+      });
+    } catch (err) {
+      console.error("OpenAdd error:", err);
+    }
   };
 
   const openEdit = (org) => {
-    setEditMode(true);
-    setModalData(org);
+    try {
+      setEditMode(true);
+      setModalData(org);
+    } catch (err) {
+      console.error("OpenEdit error:", err);
+    }
   };
 
   const saveOrganizer = () => {
-    if (editMode) {
-      setOrganizers(
-        organizers.map((o) =>
-          o.identity === modalData.identity ? modalData : o
-        )
-      );
-    } else {
-      setOrganizers([
-        ...organizers,
-        { ...modalData, identity: Date.now() }, 
-      ]);
+    try {
+      if (editMode) {
+        setOrganizers(
+          organizers.map((o) =>
+            o.identity === modalData.identity ? modalData : o
+          )
+        );
+      } else {
+        setOrganizers([
+          ...organizers,
+          { ...modalData, identity: Date.now() }, // fake ID
+        ]);
+      }
+
+      setModalData(null);
+    } catch (err) {
+      console.error("SaveOrganizer error:", err);
     }
-    setModalData(null);
   };
 
   const deleteOrganizer = (id) => {
-    setOrganizers(organizers.filter((o) => o.identity !== id));
+    try {
+      setOrganizers(organizers.filter((o) => o.identity !== id));
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   };
 
   if (loading) return <p>Loading organizers...</p>;
 
   return (
     <div className="container mt-4">
-
+      
       {/* HEADER */}
       <div className="d-flex justify-content-between align-items-center">
         <h2>Organizer List</h2>
@@ -124,14 +151,26 @@ export default function OrganiserList() {
 
                   <button
                     className="btn btn-primary btn-sm mx-1"
-                    onClick={() => openEdit(org)}
+                    onClick={() => {
+                      try {
+                        openEdit(org);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
                   >
                     Edit
                   </button>
 
                   <button
                     className="btn btn-danger btn-sm mx-1"
-                    onClick={() => deleteOrganizer(org.identity)}
+                    onClick={() => {
+                      try {
+                        deleteOrganizer(org.identity);
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
                   >
                     Delete
                   </button>
@@ -156,11 +195,20 @@ export default function OrganiserList() {
                 <h5 className="modal-title">
                   {editMode ? "Edit Organizer" : "Add Organizer"}
                 </h5>
-                <button className="btn-close" onClick={() => setModalData(null)}></button>
+                <button
+                  className="btn-close"
+                  onClick={() => {
+                    try {
+                      setModalData(null);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                ></button>
               </div>
 
               <div className="modal-body">
-                {/* Input fields */}
+
                 {[
                   ["organizationName", "Organization Name"],
                   ["domainEmail", "Domain Email"],
@@ -174,29 +222,65 @@ export default function OrganiserList() {
                     className="form-control mb-2"
                     placeholder={label}
                     value={modalData[key]}
-                    onChange={(e) =>
-                      setModalData({ ...modalData, [key]: e.target.value })
-                    }
+                    onChange={(e) => {
+                      try {
+                        setModalData({
+                          ...modalData,
+                          [key]: e.target.value,
+                        });
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
                   />
                 ))}
 
-                {/* Verified Switch */}
                 <div className="form-check form-switch mt-3">
                   <input
                     className="form-check-input"
                     type="checkbox"
                     checked={modalData.isVerified}
-                    onChange={(e) =>
-                      setModalData({ ...modalData, isVerified: e.target.checked })
-                    }
+                    onChange={(e) => {
+                      try {
+                        setModalData({
+                          ...modalData,
+                          isVerified: e.target.checked,
+                        });
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
                   />
                   <label className="form-check-label">Verified</label>
                 </div>
               </div>
 
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setModalData(null)}>Close</button>
-                <button className="btn btn-success" onClick={saveOrganizer}>Save</button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    try {
+                      setModalData(null);
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                >
+                  Close
+                </button>
+
+                <button
+                  className="btn btn-success"
+                  onClick={() => {
+                    try {
+                      saveOrganizer();
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                >
+                  Save
+                </button>
               </div>
 
             </div>

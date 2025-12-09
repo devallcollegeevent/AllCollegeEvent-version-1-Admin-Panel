@@ -14,25 +14,33 @@ export default function EventDetails() {
 
   useEffect(() => {
     async function load() {
-      const all = await getAllEventsApi();
-      const allEvents = all.data?.data || [];
+      try {
+        const all = await getAllEventsApi();
+        const allEvents = all?.data?.data || [];
 
-      // find selected event
-      const selected = allEvents.find((ev) => ev.identity === id);
+        const selected = allEvents.find((ev) => ev.identity === id);
 
-      if (!selected) {
+        if (!selected) {
+          setEvent(null);
+          setLoading(false);
+          return;
+        }
+
+        const res = await getSingleEventApi(id);
+        setEvent(res?.data?.data || null);
+      } catch (err) {
+        console.error("Error loading event:", err);
         setEvent(null);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      const res = await getSingleEventApi(id);
-
-      setEvent(res.data?.data || null);
-      setLoading(false);
     }
 
-    load();
+    try {
+      load();
+    } catch (err) {
+      console.error("Effect error:", err);
+    }
   }, [id]);
 
   if (loading) return <p className="p-4">Loading event...</p>;
@@ -40,7 +48,16 @@ export default function EventDetails() {
 
   return (
     <div className="container mt-4">
-      <button className="btn btn-dark mb-3" onClick={() => router.back()}>
+      <button
+        className="btn btn-dark mb-3"
+        onClick={() => {
+          try {
+            router.back();
+          } catch (err) {
+            console.error("Back navigation error:", err);
+          }
+        }}
+      >
         ← Back
       </button>
 
@@ -55,6 +72,7 @@ export default function EventDetails() {
             padding: "6px 159px",
           }}
         />
+
         <h2 className="mt-4">{event.title}</h2>
 
         <div
@@ -62,7 +80,6 @@ export default function EventDetails() {
           className="mt-5"
         >
           <div>
-            {" "}
             <p>
               <b>Description:</b> {event.description ?? "No description"}
             </p>
@@ -70,6 +87,7 @@ export default function EventDetails() {
               <b>Organizer:</b> {event.orgIdentity}
             </p>
           </div>
+
           <div>
             <p>
               <b>Venue:</b> {event.venue}
@@ -79,6 +97,7 @@ export default function EventDetails() {
             </p>
           </div>
         </div>
+
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <p>
@@ -88,6 +107,7 @@ export default function EventDetails() {
               <b>Mode:</b> {event.mode}
             </p>
           </div>
+
           <div>
             <p>
               <b>Status:</b> {event.status ? event.status : "no"}

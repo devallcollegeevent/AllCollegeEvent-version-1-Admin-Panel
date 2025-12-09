@@ -14,82 +14,116 @@ async function handleApi(promise) {
   }
 }
 
+/* ============================================================
+   ORGANIZATION API
+   ============================================================ */
 
-// =================================== organisation api ==============================================
-
-// Get ALL organizers list Api
 export const getAllOrganizersApi = async () => {
-  return await handleApi(api.get("/v1/organizations/"));
+  try {
+    return await handleApi(api.get("/v1/organizations/"));
+  } catch (err) {
+    return { success: false, message: "Failed to load organizers" };
+  }
 };
 
-// Get organizer all event list
 export const getOrganizerEventsApi = async (orgId) => {
-  return await handleApi(api.get(`/v1/organizations/${orgId}/events`));
+  try {
+    return await handleApi(api.get(`/v1/organizations/${orgId}/events`));
+  } catch (err) {
+    return { success: false, message: "Failed to load events" };
+  }
 };
 
+/* ============================================================
+   EVENT API
+   ============================================================ */
 
-// =================================== event api ==============================================
-
-// create Event Api
-export const createEventApi = async (orgId , data) => {
-  return await handleApi(
-    api.post(`/v1/organizations/${orgId}/events`, data)
-  );
+export const createEventApi = async (orgId, data) => {
+  try {
+    return await handleApi(
+      api.post(`/v1/organizations/${orgId}/events`, data)
+    );
+  } catch (err) {
+    return { success: false, message: "Event creation failed" };
+  }
 };
 
-// Get ALL events (GLOBAL events)
 export const getAllEventsApi = async () => {
+  try {
     return await handleApi(api.get("/v1/events"));
+  } catch (err) {
+    return { success: false, message: "Failed to load events" };
+  }
 };
 
-//  Get SINGLE event (inside specific organizer)
 export const getSingleEventApi = async (eventId) => {
- return await handleApi(
-    api.get(`/v1/events/${eventId}`)
-  );
+  try {
+    return await handleApi(api.get(`/v1/events/${eventId}`));
+  } catch (err) {
+    return { success: false, message: "Failed to load event" };
+  }
 };
 
-// update singel event
 export const updateEventApi = async (orgId, eventId, data) => {
-  return await handleApi(
-    api.put(`/v1/organizations/${orgId}/events/${eventId}`, data)
-  );
+  try {
+    return await handleApi(
+      api.put(`/v1/organizations/${orgId}/events/${eventId}`, data)
+    );
+  } catch (err) {
+    return { success: false, message: "Event update failed" };
+  }
 };
 
-// delete singel event 
 export const deleteEventApi = async (orgId, eventId) => {
-  return await handleApi(
-    api.delete(`/v1/organizations/${orgId}/events/${eventId}`)
-  );
+  try {
+    return await handleApi(
+      api.delete(`/v1/organizations/${orgId}/events/${eventId}`)
+    );
+  } catch (err) {
+    return { success: false, message: "Event delete failed" };
+  }
 };
 
-// =================================== user api ==============================================
+/* ============================================================
+   USER API
+   ============================================================ */
 
-// CREATE NEW USER
 export const createUserApi = async (data) => {
-  return await handleApi(
-    api.post("/v1/admin/user", data)
-  );
+  try {
+    return await handleApi(api.post("/v1/admin/user", data));
+  } catch (err) {
+    return { success: false, message: "User creation failed" };
+  }
 };
 
-//  Get ALL users 
 export const getAllUsersApi = async () => {
-  return await handleApi(api.get("/v1/admin/users"));
+  try {
+    return await handleApi(api.get("/v1/admin/users"));
+  } catch (err) {
+    return { success: false, message: "Failed to fetch users" };
+  }
 };
 
-//  Get SINGLE user details 
 export const getUserByIdApi = async (id) => {
-  return await handleApi(api.get(`/v1/admin/users/${id}`));
+  try {
+    return await handleApi(api.get(`/v1/admin/users/${id}`));
+  } catch (err) {
+    return { success: false, message: "Failed to load user" };
+  }
 };
 
-//  Update user (name, email, status, etc.) 
 export const updateUserApi = async (id, data) => {
-  return await handleApi(
-    api.put(`/v1/admin/user/${id}`, data)
-  );
+  try {
+    return await handleApi(api.put(`/v1/admin/user/${id}`, data));
+  } catch (err) {
+    return { success: false, message: "User update failed" };
+  }
 };
 
-//  Delete user 
 export const deleteUserApi = async (id) => {
-  return await handleApi(api.delete(`/v1/admin/user/${id}`));
+  try {
+    return await handleApi(api.delete(`/v1/admin/user/${id}`));
+  } catch (err) {
+    return { success: false, message: "User delete failed" };
+  }
 };

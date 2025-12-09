@@ -17,75 +17,100 @@ export default function UsersPage() {
 
   useEffect(() => {
     async function load() {
-      const res = await getAllUsersApi();
-      if (res.success) {
-        setUsers(res.data.data || []);
+      try {
+        const res = await getAllUsersApi();
+        if (res.success) {
+          setUsers(res.data?.data || []);
+        }
+      } catch (err) {
+        console.error("User load failed:", err);
+        setUsers([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
-    load();
+
+    try {
+      load();
+    } catch (err) {
+      console.error("useEffect error:", err);
+    }
   }, []);
 
-
   const openAdd = () => {
-    setEditMode(false);
-    setModalData({ email: "", name: "", password: "", status: "" });
+    try {
+      setEditMode(false);
+      setModalData({ email: "", name: "", password: "", status: "" });
+    } catch (err) {
+      console.error("openAdd error:", err);
+    }
   };
 
   const openEdit = (user) => {
-    setEditMode(true);
-    setModalData(user);
+    try {
+      setEditMode(true);
+      setModalData(user);
+    } catch (err) {
+      console.error("openEdit error:", err);
+    }
   };
 
   const saveUser = async () => {
-    const body = {
-      email: modalData.email,
-      name: modalData.name,
-      password: modalData.password,
-      type: "user",
-      // status: modalData.status,
-    };
-
-    if (editMode) {
+    try {
       const body = {
         email: modalData.email,
         name: modalData.name,
         password: modalData.password,
+        type: "user",
       };
-      // UPDATE USER
-      const res = await updateUserApi(modalData.identity, body);
 
-      if (res.success) {
-        setUsers(
-          users.map((u) =>
-            u.identity === modalData.identity ? { ...u, ...body } : u
-          )
-        );
-      } else {
-        alert("Update failed: " + res.message);
-      }
-    } else {
-      // CREATE USER
-      const res = await createUserApi(body);
+      if (editMode) {
+        const updateBody = {
+          email: modalData.email,
+          name: modalData.name,
+          password: modalData.password,
+        };
 
-      if (res.success) {
-        setUsers([...users, res.data.user]); 
+        const res = await updateUserApi(modalData.identity, updateBody);
+
+        if (res.success) {
+          setUsers(
+            users.map((u) =>
+              u.identity === modalData.identity ? { ...u, ...updateBody } : u
+            )
+          );
+        } else {
+          alert("Update failed: " + res.message);
+        }
       } else {
-        alert("Create failed: " + res.message);
+        const res = await createUserApi(body);
+
+        if (res.success) {
+          setUsers([...users, res.data?.user]);
+        } else {
+          alert("Create failed: " + res.message);
+        }
       }
+
+      setModalData("");
+    } catch (err) {
+      console.error("saveUser error:", err);
+      alert("Something went wrong while saving user");
     }
-
-    setModalData("");
   };
 
-
   const deleteUser = async (id) => {
-    const res = await deleteUserApi(id);
+    try {
+      const res = await deleteUserApi(id);
 
-    if (res.success) {
-      console.log("deleted user")
-    } else {
-      console.log("responce",res.message)
+      if (res.success) {
+        setUsers((prev) => prev.filter((u) => u.identity !== id));
+        console.log("User deleted");
+      } else {
+        console.log("Delete failed:", res.message);
+      }
+    } catch (err) {
+      console.error("deleteUser error:", err);
     }
   };
 
@@ -95,6 +120,7 @@ export default function UsersPage() {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center">
         <h2>User List</h2>
+
         <button className="btn btn-success" onClick={openAdd}>
           + Add User
         </button>
@@ -123,8 +149,8 @@ export default function UsersPage() {
             )}
 
             {users.map((user) => (
-              <tr key= {user?.identity || "No ID"}>
-                <td> {user?.identity || "No ID"}</td>
+              <tr key={user?.identity || "no-id"}>
+                <td>{user?.identity || "No ID"}</td>
                 <td>{user.email}</td>
                 <td>{user.name}</td>
                 <td>Active</td>
@@ -132,14 +158,26 @@ export default function UsersPage() {
                 <td className="text-center">
                   <button
                     className="btn btn-primary btn-sm mx-1"
-                    onClick={() => openEdit(user)}
+                    onClick={() => {
+                      try {
+                        openEdit(user);
+                      } catch (err) {
+                        console.error("Edit click error:", err);
+                      }
+                    }}
                   >
                     Edit
                   </button>
 
                   <button
                     className="btn btn-danger btn-sm mx-1"
-                    onClick={() => deleteUser(user.identity)}
+                    onClick={() => {
+                      try {
+                        deleteUser(user.identity);
+                      } catch (err) {
+                        console.error("Delete click error:", err);
+                      }
+                    }}
                   >
                     Delete
                   </button>
@@ -158,14 +196,12 @@ export default function UsersPage() {
         >
           <div className="modal-dialog">
             <div className="modal-content">
+
               <div className="modal-header">
                 <h5 className="modal-title">
                   {editMode ? "Edit User" : "Add User"}
                 </h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setModalData("")}
-                ></button>
+                <button className="btn-close" onClick={() => setModalData("")}></button>
               </div>
 
               <div className="modal-body">
@@ -186,6 +222,7 @@ export default function UsersPage() {
                     setModalData({ ...modalData, name: e.target.value })
                   }
                 />
+
                 <input
                   className="form-control mb-2"
                   placeholder="Enter a password"
@@ -209,16 +246,14 @@ export default function UsersPage() {
               </div>
 
               <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setModalData("")}
-                >
+                <button className="btn btn-secondary" onClick={() => setModalData("")}>
                   Close
                 </button>
                 <button className="btn btn-success" onClick={saveUser}>
                   Save
                 </button>
               </div>
+
             </div>
           </div>
         </div>

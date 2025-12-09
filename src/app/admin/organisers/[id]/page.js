@@ -6,8 +6,13 @@ import { useEffect, useState } from "react";
 
 // Past event checker
 function isPast(date) {
-  const today = new Date().setHours(0, 0, 0, 0);
-  return new Date(date).setHours(0, 0, 0, 0) < today;
+  try {
+    const today = new Date().setHours(0, 0, 0, 0);
+    return new Date(date).setHours(0, 0, 0, 0) < today;
+  } catch (err) {
+    console.error("Date check error:", err);
+    return false;
+  }
 }
 
 export default function OrganizerEvents() {
@@ -20,11 +25,22 @@ export default function OrganizerEvents() {
 
   useEffect(() => {
     async function load() {
-      const res = await getOrganizerEventsApi(id);
-      setEvents(res.data?.data || []);
-      setLoading(false);
+      try {
+        const res = await getOrganizerEventsApi(id);
+        setEvents(res?.data?.data || []);
+      } catch (err) {
+        console.error("Failed to load organizer events:", err);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
     }
-    load();
+
+    try {
+      load();
+    } catch (err) {
+      console.error("UseEffect error:", err);
+    }
   }, [id]);
 
   if (loading) return <p>Loading events...</p>;
@@ -35,7 +51,17 @@ export default function OrganizerEvents() {
       {/* HEADER */}
       <div className="d-flex justify-content-between align-items-center">
         <h2>Events — Organizer ({id})</h2>
-        <button className="btn btn-secondary" onClick={() => router.push("/admin/organisers")}>
+
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            try {
+              router.push("/admin/organisers");
+            } catch (err) {
+              console.error("Navigation error:", err);
+            }
+          }}
+        >
           Back
         </button>
       </div>
@@ -51,7 +77,16 @@ export default function OrganizerEvents() {
 
               <div className="modal-header">
                 <h5 className="modal-title">{popup.title}</h5>
-                <button className="btn-close" onClick={() => setPopup(null)}></button>
+                <button
+                  className="btn-close"
+                  onClick={() => {
+                    try {
+                      setPopup(null);
+                    } catch (err) {
+                      console.error("Close popup error:", err);
+                    }
+                  }}
+                ></button>
               </div>
 
               <div className="modal-body">
@@ -63,7 +98,16 @@ export default function OrganizerEvents() {
               </div>
 
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setPopup(null)}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    try {
+                      setPopup(null);
+                    } catch (err) {
+                      console.error("Close popup error:", err);
+                    }
+                  }}
+                >
                   Close
                 </button>
               </div>
@@ -102,7 +146,13 @@ export default function OrganizerEvents() {
               <tr
                 key={ev.identity}
                 style={{ cursor: "pointer" }}
-                onClick={() => setPopup(ev)}
+                onClick={() => {
+                  try {
+                    setPopup(ev);
+                  } catch (err) {
+                    console.error("Popup open error:", err);
+                  }
+                }}
               >
                 <td>{index + 1}</td>
                 <td>{ev.title}</td>
@@ -111,7 +161,16 @@ export default function OrganizerEvents() {
                 <td>{ev.eventDate}</td>
                 <td>{ev.eventTime}</td>
 
-                <td className="fw-bold" onClick={(e) => e.stopPropagation()}>
+                <td
+                  className="fw-bold"
+                  onClick={(e) => {
+                    try {
+                      e.stopPropagation();
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }}
+                >
                   {isPast(ev.eventDate) ? (
                     <span className="text-danger">Finished</span>
                   ) : (
