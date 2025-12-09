@@ -14,7 +14,6 @@ export default function EventDetails() {
 
   useEffect(() => {
     async function load() {
-      // First get all events to find the correct orgId
       const all = await getAllEventsApi();
       const allEvents = all.data?.data || [];
 
@@ -28,7 +27,6 @@ export default function EventDetails() {
       }
 
       const res = await getSingleEventApi(id);
-      console.log("qqqqqqqqqqqq",res)
 
       setEvent(res.data?.data || null);
       setLoading(false);

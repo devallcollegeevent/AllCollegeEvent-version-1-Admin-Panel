@@ -10,19 +10,17 @@ export default function OrganiserList() {
   const [modalData, setModalData] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
-  // Load organizers from API
   useEffect(() => {
     async function loadOrganizers() {
       const res = await getAllOrganizersApi();
       if (res.success) {
-        setOrganizers(res.data.data || []); // API → data.data
+        setOrganizers(res.data.data || []); 
       }
       setLoading(false);
     }
     loadOrganizers();
   }, []);
 
-  // Open Add Modal
   const openAdd = () => {
     setEditMode(false);
     setModalData({
@@ -36,32 +34,27 @@ export default function OrganiserList() {
     });
   };
 
-  // Open Edit Modal
   const openEdit = (org) => {
     setEditMode(true);
     setModalData(org);
   };
 
-  // Save/Add Organizer
   const saveOrganizer = () => {
     if (editMode) {
-      // Update existing
       setOrganizers(
         organizers.map((o) =>
           o.identity === modalData.identity ? modalData : o
         )
       );
     } else {
-      // Add new
       setOrganizers([
         ...organizers,
-        { ...modalData, identity: Date.now() }, // temporary ID
+        { ...modalData, identity: Date.now() }, 
       ]);
     }
     setModalData(null);
   };
 
-  // Delete organizer
   const deleteOrganizer = (id) => {
     setOrganizers(organizers.filter((o) => o.identity !== id));
   };

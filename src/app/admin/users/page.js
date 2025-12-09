@@ -15,9 +15,6 @@ export default function UsersPage() {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ============================
-  // LOAD USERS FROM BACKEND
-  // ============================
   useEffect(() => {
     async function load() {
       const res = await getAllUsersApi();
@@ -29,25 +26,17 @@ export default function UsersPage() {
     load();
   }, []);
 
-  // ============================
-  // OPEN ADD MODAL
-  // ============================
+
   const openAdd = () => {
     setEditMode(false);
     setModalData({ email: "", name: "", password: "", status: "" });
   };
 
-  // ============================
-  // OPEN EDIT MODAL
-  // ============================
   const openEdit = (user) => {
     setEditMode(true);
     setModalData(user);
   };
 
-  // ============================
-  // SAVE USER (UPDATE ONLY)
-  // ============================
   const saveUser = async () => {
     const body = {
       email: modalData.email,
@@ -80,7 +69,7 @@ export default function UsersPage() {
       const res = await createUserApi(body);
 
       if (res.success) {
-        setUsers([...users, res.data.user]); // backend returns created user
+        setUsers([...users, res.data.user]); 
       } else {
         alert("Create failed: " + res.message);
       }
@@ -89,9 +78,7 @@ export default function UsersPage() {
     setModalData("");
   };
 
-  // ============================
-  // DELETE USER
-  // ============================
+
   const deleteUser = async (id) => {
     const res = await deleteUserApi(id);
 
