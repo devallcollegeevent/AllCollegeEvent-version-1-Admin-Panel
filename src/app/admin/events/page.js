@@ -9,11 +9,6 @@ import {
 } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 
-function isPast(date) {
-  const today = new Date().setHours(0, 0, 0, 0);
-  return new Date(date).setHours(0, 0, 0, 0) < today;
-}
-
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [modalData, setModalData] = useState("");
@@ -21,11 +16,9 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // confirm modal state
   const [confirmPopUp, setConfirmPopUp] = useState(false);
   const [toDelete, setToDelete] = useState(null);
 
-  // LOAD EVENTS
   useEffect(() => {
     async function load() {
       const res = await getAllEventsApi();
@@ -35,9 +28,7 @@ export default function EventsPage() {
     load();
   }, []);
 
-  /* ===========================
-     OPEN ADD
-  =========================== */
+
   const openAdd = () => {
     setEditMode(false);
     setModalData({
@@ -52,9 +43,7 @@ export default function EventsPage() {
     });
   };
 
-  /* ===========================
-     OPEN EDIT
-  =========================== */
+
   const openEdit = (item) => {
     if (!item) return;
     setEditMode(true);
@@ -71,9 +60,7 @@ export default function EventsPage() {
     });
   };
 
-  /* ===========================
-     SAVE EVENT (CREATE / UPDATE)
-  =========================== */
+
   const saveEvent = async () => {
     const form = new FormData();
     form.append("event_title", modalData?.event_title ?? "");
@@ -123,12 +110,7 @@ export default function EventsPage() {
     setModalData("");
   };
 
-  /* ===========================
-     DELETE: open confirm modal (UI)
-     and actual delete function
-  =========================== */
   const openDeleteConfirm = (ev) => {
-    // ev should be the event object from the list
     setToDelete({
       identity: ev.identity,
       orgIdentity: ev.orgIdentity,
